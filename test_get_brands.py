@@ -18,3 +18,14 @@ class TestGetBrands:
         data_json = responce.json()
         count_of_brands = len(data_json["brands"])
         assert count_of_brands > 10
+
+    def test_brands_structure(self):
+        brands_service = BrandsService()
+        response = brands_service.get_brands()
+        data_json = response.json()
+
+        for brand in data_json["brands"]:
+            assert "id" in brand
+            assert "brand" in brand
+            assert isinstance(brand["id"], int)
+            assert isinstance(brand["brand"], str)
