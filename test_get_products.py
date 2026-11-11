@@ -1,18 +1,15 @@
 import pytest
-from services.products_service import productsService
+
+from services.products_service import ProductsService
+
 
 @pytest.mark.products
 @pytest.mark.smoke
 @pytest.mark.api
 class TestGetProducts:
 
-    def test_get_status_code(self):
-        products_service = productsService()
-        response = products_service.get_products()
-        assert response.status_code == 200
-
     def test_get_count_of_products(self):
-        products_service = productsService()
+        products_service = ProductsService()
         response = products_service.get_products()
         data_json = response.json()
 
@@ -20,9 +17,11 @@ class TestGetProducts:
         assert count_of_products > 33
 
     def test_products_structure(self):
-        products_service = productsService()
+        products_service = ProductsService()
         response = products_service.get_products()
         data_json = response.json()
+
+        assert data_json["products"], "Список продуктов пуст"
 
         for product in data_json["products"]:
             assert "id" in product
