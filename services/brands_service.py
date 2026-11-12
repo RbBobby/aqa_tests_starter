@@ -1,8 +1,5 @@
 import requests
 
-from test_get_products import BASE_URL
-
-
 BASE_URL = "https://automationexercise.com/api"
 
 class BrandsService:
@@ -14,5 +11,3 @@ class BrandsService:
         url = self.base_url + "/brandsList"
         response = requests.get(url)
         assert response.status_code == 200, f"response.status_code = {response.status_code}. Проверьте API"
-
-        return response
