@@ -21,6 +21,8 @@ htmlcov/
 .tox/
 .mypy_cache/
 .ruff_cache/
+allure-results/
+allure-report/
 
 # Environment and secrets
 .env

@@ -1,18 +1,17 @@
-import requests
+import allure
+from services.api_client import ApiClient
 
-from test_get_products import BASE_URL
-
-
-BASE_URL = "https://automationexercise.com/api"
-
+ENDPOINT = "/brandsList"
 class BrandsService:
 
-    def __init__(self):
-        self.base_url = BASE_URL
+    def __init__(self, api_client: ApiClient):
+        self.api_client = api_client
+        
 
     def get_brands(self):
-        url = self.base_url + "/brandsList"
-        response = requests.get(url)
-        assert response.status_code == 200, f"response.status_code = {response.status_code}. Проверьте API"
 
+        with allure.step("запрашиваем список брендов"):
+            response = self.api_client.get(ENDPOINT)
+        with allure.step("проверяем список брендов"):    
+            assert response.status_code == 200, f"response.status_code = {response.status_code}. Проверьте API"
         return response
