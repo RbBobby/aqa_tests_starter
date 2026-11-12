@@ -9,7 +9,6 @@ class BrandsService:
         
 
     def get_brands(self):
-
         with allure.step("запрашиваем список брендов"):
             response = self.api_client.get(ENDPOINT)
         with allure.step("проверяем список брендов"):    

@@ -1,5 +1,4 @@
-
-## Установка
+# API Tests
 
 ```bash
 python3 -m venv .venv
@@ -42,3 +41,9 @@ allure generate allure-results --clean -o allure-report
 ```
 
 Папки `allure-results/` и `allure-report/` исключены из Git.
+=======
+pip3 install -r requirements.txt
+
+## Запуск тестов
+
+python -m pytest -v
