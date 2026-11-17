@@ -1,19 +1,21 @@
-import requests
 
-from services.constans import BASE_URL, TIMEOUT
+import allure
+
+from services.api_client import ApiClient
 
 
 class ProductsService:
 
-    def __init__(self):
-        self.base_url = BASE_URL
+    def __init__(self, api_client: ApiClient):
+        self.api_client = api_client
 
+    @allure.step("Получить список товаров")
     def get_products(self):
-        url = self.base_url + "/productsList"
-        response = requests.get(url, timeout=TIMEOUT)
+        response = self.api_client.get("/productsList")
 
-        assert response.status_code == 200, (
-            f"Ожидали HTTP 200, получили {response.status_code}"
-        )
+        with allure.step("Проверить статус ответа"):
+            assert response.status_code == 200, (
+                f"Ожидали HTTP 200, получили {response.status_code}"
+            )
 
         return response

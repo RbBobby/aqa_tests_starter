@@ -1,11 +1,7 @@
+
 import allure
 import pytest
-import requests
 
-BASE_URL = "https://automationexercise.com/api"
-ENDPOINT = "/productsList"
-
-URL = BASE_URL + ENDPOINT
 
 @allure.epic("API магазина")
 @allure.feature("Товары")
@@ -14,24 +10,51 @@ URL = BASE_URL + ENDPOINT
 @pytest.mark.smoke
 @pytest.mark.api
 class TestGetProducts:
-    @allure.title("API списка товаров возвращает HTTP 200")
-    @allure.description("Отправить запрос списка товаров и проверить HTTP-статус ответа.")
-    def test_get_status_code(self):
-        with allure.step("Запросить список товаров"):
-            responce = requests.get(URL)
-        with allure.step("Проверить, что API вернул HTTP 200"):
-            assert responce.status_code == 200
+
+    @allure.title("Список товаров содержит поле products со списком")
+    def test_products_is_list(self, products_service):
+        with allure.step("Получить список товаров"):
+            response = products_service.get_products()
+            data = response.json()
+
+        with allure.step("Проверить, что products является списком"):
+            assert "products" in data
+            assert isinstance(data["products"], list)
 
     @allure.title("Список содержит больше 33 товаров")
-    @allure.description("Получить список товаров и проверить, что в нём больше 33 элементов.")
-    def test_gea_count_of_products(self):
-        with allure.step("Запросить список товаров"):
-            responce = requests.get(URL)
-        with allure.step("Получить количество товаров из JSON-ответа"):
-            data_json = responce.json()
-            count_of_products = len(data_json["products"])
-        with allure.step("Проверить, что количество товаров больше 33"):
-            assert count_of_products > 33
+    def test_count_of_products(self, products_service):
+        with allure.step("Получить список товаров"):
+            response = products_service.get_products()
+            data = response.json()
 
+        with allure.step("Проверить количество товаров"):
+            assert len(data["products"]) > 33
 
+    @allure.title("У каждого товара есть обязательные поля")
+    def test_products_have_required_fields(self, products_service):
+        with allure.step("Получить список товаров"):
+            response = products_service.get_products()
+            products = response.json()["products"]
 
+        required_fields = ["id", "name", "price", "brand", "category"]
+
+        with allure.step("Проверить обязательные поля каждого товара"):
+            for index, product in enumerate(products):
+                for field in required_fields:
+                    assert field in product, (
+                        f"У товара с индексом {index}, "
+                        f"id={product.get('id')}, отсутствует поле {field}"
+                    )
+
+    @allure.title("ID всех товаров уникальны")
+    def test_products_ids_are_unique(self, products_service):
+        with allure.step("Получить список товаров"):
+            response = products_service.get_products()
+            products = response.json()["products"]
+
+        with allure.step("Проверить уникальность ID"):
+            products_ids = [product["id"] for product in products]
+
+            assert len(products_ids) == len(set(products_ids)), (
+                "В списке товаров есть повторяющиеся ID"
+            )

@@ -1,9 +1,12 @@
+
 import allure
 import requests
+
 from services.constans import TIMEOUT, BASE_URL
 
 
 class ApiClient:
+
     def __init__(self):
         self.base_url = BASE_URL
         self.timeout = TIMEOUT
@@ -13,21 +16,33 @@ class ApiClient:
         self.session.close()
 
     @allure.step("Выполнить GET-запрос к {path}")
-    def get(self, path: str, **kwagrs):
-        return self.session.get(f"{self.base_url}{path}", timeout=self.timeout, **kwagrs)
+    def get(self, path: str, **kwargs):
+        return self.session.get(
+            f"{self.base_url}{path}",
+            timeout=self.timeout,
+            **kwargs
+        )
 
-    @allure.step("Выполнить запрос через ApiClient.put к {path}")
-    def put (self, path: str, **kwagrs):
-        return self.session.get(f"{self.base_url}{path}", timeout=self.timeout, **kwagrs)
+    @allure.step("Выполнить POST-запрос к {path}")
+    def post(self, path: str, **kwargs):
+        return self.session.post(
+            f"{self.base_url}{path}",
+            timeout=self.timeout,
+            **kwargs
+        )
 
-    @allure.step("Выполнить запрос через ApiClient.post к {path}")
-    def post(self, path: str, **kwagrs):
-        return self.session.get(f"{self.base_url}{path}", timeout=self.timeout, **kwagrs)
+    @allure.step("Выполнить PUT-запрос к {path}")
+    def put(self, path: str, **kwargs):
+        return self.session.put(
+            f"{self.base_url}{path}",
+            timeout=self.timeout,
+            **kwargs
+        )
 
-    @allure.step("Выполнить запрос через ApiClient.delete к {path}")
-    def delete(self, path: str, **kwagrs):
-        return self.session.get(f"{self.base_url}{path}", timeout=self.timeout, **kwagrs)   
-
-    #Todo Добавить методы get post delete\
-    #Добавить close request
-
+    @allure.step("Выполнить DELETE-запрос к {path}")
+    def delete(self, path: str, **kwargs):
+        return self.session.delete(
+            f"{self.base_url}{path}",
+            timeout=self.timeout,
+            **kwargs
+        )
