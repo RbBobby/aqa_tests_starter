@@ -58,3 +58,43 @@ class TestGetProducts:
             assert len(products_ids) == len(set(products_ids)), (
                 "В списке товаров есть повторяющиеся ID"
             )
+
+    @pytest.mark.parametrize(
+        "field, expected_type",
+        [
+            ("id", int),
+            ("name", str),
+            ("price", str),
+            ("brand", str),
+            ("category", dict)
+        ]
+    )
+    @allure.title("Проверка поля {field} у всех товаров")
+    def test_product_field_values(self, products_service, field, expected_type):
+        with allure.step("Получить список товаров"):
+            response = products_service.get_products()
+            products = response.json()["products"]
+
+        with allure.step(f"Проверить поле {field} у каждого товара"):
+            for index, product in enumerate(products):
+                value = product[field]
+
+                assert type(value) is expected_type, (
+                    f"У товара с индексом {index}, "
+                    f"id={product.get('id')}: "
+                    f"поле {field} должно иметь тип {expected_type.__name__}, "
+                    f"получено {type(value).__name__}"
+                )
+
+                if field == "id":
+                    assert value > 0
+
+                elif field in ["name", "price", "brand"]:
+                    assert value.strip(), (
+                        f"Поле {field} у товара с индексом {index} пустое"
+                    )
+
+                elif field == "category":
+                    assert value, (
+                        f"Категория товара с индексом {index} пустая"
+                    )
